@@ -14,13 +14,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(private val getDogsByBreedsUseCase: GetDogsByBreedsUseCase) :
     ViewModel() {
+ // _isLoading _listDogs lisDogs isLoading
 
-    private val _listDogs = MutableStateFlow<List<String>>(emptyList())
-    val lisDogs = _listDogs.asStateFlow()
-
-
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading = _isLoading.asStateFlow()
 
 
     fun getDogsByBreeds(query: String) {

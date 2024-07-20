@@ -34,14 +34,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.searchdogspracticecompose.ui.theme.screens.mainDogsScreen.viewmodel.MainScreenViewModel
 
 @Composable
-fun MainScreen(navController: NavHostController, viewModel: MainScreenViewModel = hiltViewModel()) {
-    val isLoading by viewModel.isLoading.collectAsState()
-    val dogList by viewModel.lisDogs.collectAsState()
+fun MainScreen(viewModel: MainScreenViewModel = hiltViewModel()) {
+    // collect  isLoading y dogList
 
     if (isLoading) {
         ShowLoading()
@@ -61,65 +59,12 @@ fun ContentView(viewModel: MainScreenViewModel, dogList: List<String>) {
         var query by rememberSaveable {
             mutableStateOf("")
         }
-        TextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .constrainAs(idTextField) {
-                    top.linkTo(topLine)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    bottom.linkTo(idRecyclerView.top)
-                },
-            value = query,
-            onValueChange = { query = it },
-            placeholder = { Text(text = "Search...") },
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "Search Icon"
-                )
-            },
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Search
-            ),
-            keyboardActions = KeyboardActions(
-                onSearch = { viewModel.getDogsByBreeds(query) }
-            ),
-            singleLine = true,
-        )
+
+        // TextField value onValueChange placeholder leadingIcon keyboardOptions keyboardActions singleline
+
+        // LazyColumn Card( elevation shape colors Image(ContentScale) )
 
 
-        LazyColumn(modifier = Modifier
-            .constrainAs(idRecyclerView) {
-                top.linkTo(idTextField.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                bottom.linkTo(parent.bottom)
-            }
-            .fillMaxSize()) {
-            items(dogList) { imageUrl ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 16.dp, horizontal = 4.dp)
-                        .height(250.dp),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color.White,
-                        contentColor = Color.Black
-                    )
-                ) {
-                    Image(
-                        painter = rememberAsyncImagePainter(imageUrl),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
-            }
-        }
 
     }
 }
