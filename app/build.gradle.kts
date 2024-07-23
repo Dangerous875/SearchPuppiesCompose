@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.daggerHiltAndroid)
     alias(libs.plugins.kover)
     alias(libs.plugins.ktlint)
-
+    alias(libs.plugins.kotlinxSerialization)
 }
 
 android {
@@ -97,5 +97,8 @@ dependencies {
     implementation(libs.androidx.room.common)
 //contraintLayout
     implementation(libs.constraintlayout.compose)
+
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.navigation.compose)
 
 }

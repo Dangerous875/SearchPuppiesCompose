@@ -6,3 +6,9 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 // "{dogBreed}/images" APIService
+
+interface APIService {
+
+    @GET("{dogBreed}/images")
+    suspend fun getDogsByApi(@Path("dogBreed") query: String): Response<DogResponse>
+}
