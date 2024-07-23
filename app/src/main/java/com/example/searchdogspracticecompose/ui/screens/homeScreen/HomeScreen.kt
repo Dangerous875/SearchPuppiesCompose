@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.searchdogspracticecompose.data.local.OrientationScreen
-import com.example.searchdogspracticecompose.data.navigation.MainScreen
+import com.example.searchdogspracticecompose.data.navigation.MainScreenRoute
 import com.example.searchdogspracticecompose.ui.component.SetOrientationScreen
 import com.example.searchdogspracticecompose.ui.screens.homeScreen.viewmodel.HomeScreenViewModel
 
@@ -40,6 +40,7 @@ fun HomeScreen(navController: NavHostController , viewModel: HomeScreenViewModel
     val context = LocalContext.current
 
     SetOrientationScreen(context = context, orientation = OrientationScreen.PORTRAIT.orientation)
+
     if (isLoading) {
         ShowLoading()
     } else {
@@ -78,7 +79,7 @@ fun ShowContent(
                             .height(54.dp)
                             .clickable {
                                 viewModel.setSelectBreed(it)
-                                navController.navigate(MainScreen)
+                                navController.navigate(MainScreenRoute)
                             },
                         shape = RoundedCornerShape(8.dp),
                         elevation = CardDefaults.cardElevation(16.dp)

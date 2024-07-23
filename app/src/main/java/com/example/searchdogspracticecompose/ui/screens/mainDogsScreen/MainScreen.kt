@@ -42,7 +42,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.searchdogspracticecompose.data.local.OrientationScreen
-import com.example.searchdogspracticecompose.data.navigation.ZoomScreenn
+import com.example.searchdogspracticecompose.data.navigation.ZoomScreenRoute
 import com.example.searchdogspracticecompose.ui.component.SetOrientationScreen
 import com.example.searchdogspracticecompose.ui.screens.mainDogsScreen.viewmodel.MainScreenViewModel
 
@@ -111,7 +111,7 @@ fun ConstraintLayoutScope.ShowListDogs(
                     .fillMaxWidth()
                     .padding(vertical = 8.dp, horizontal = 4.dp)
                     .height(250.dp).clickable {
-                        navController.navigate(ZoomScreenn(imageUrl))
+                        navController.navigate(ZoomScreenRoute(imageUrl))
                     },
                 elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
                 shape = RoundedCornerShape(8.dp),

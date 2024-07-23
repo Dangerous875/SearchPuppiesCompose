@@ -5,7 +5,6 @@ import javax.inject.Inject
 
 class DogApiService @Inject constructor(private val api: APIService) {
 
-    // getDogsBreedsByName
     suspend fun getDogsBreedsByName(query: String): List<String> {
         val response = api.getDogsByApi(query)
         return response.body()?.message ?: emptyList()

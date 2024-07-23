@@ -9,7 +9,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
-// "https://dog.ceo/api/breed/"
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {

@@ -3,10 +3,10 @@ package com.example.searchdogspracticecompose.data.navigation
 import kotlinx.serialization.Serializable
 
 @Serializable
-object HomeScreen
+object HomeScreenRoute
 
 @Serializable
-object MainScreen
+object MainScreenRoute
 
 @Serializable
-data class ZoomScreenn(val urlImage : String)
+data class ZoomScreenRoute(val urlImage : String)

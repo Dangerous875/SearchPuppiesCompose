@@ -3,14 +3,13 @@ package com.example.searchdogspracticecompose
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.searchdogspracticecompose.data.navigation.HomeScreen
-import com.example.searchdogspracticecompose.data.navigation.MainScreen
-import com.example.searchdogspracticecompose.data.navigation.ZoomScreenn
+import com.example.searchdogspracticecompose.data.navigation.HomeScreenRoute
+import com.example.searchdogspracticecompose.data.navigation.MainScreenRoute
+import com.example.searchdogspracticecompose.data.navigation.ZoomScreenRoute
 import com.example.searchdogspracticecompose.ui.screens.homeScreen.HomeScreen
 import com.example.searchdogspracticecompose.ui.screens.mainDogsScreen.MainScreen
 import com.example.searchdogspracticecompose.ui.screens.zoomScreen.ZoomScreen
@@ -23,20 +22,14 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = HomeScreen) {
-                composable<MainScreen> { MainScreen(navController) }
-
-                composable<HomeScreen> { HomeScreen(navController) }
-
-                composable<ZoomScreenn> {
-                    val args = it.toRoute<ZoomScreenn>()
-                    ZoomScreen(args.urlImage)
+            NavHost(navController = navController, startDestination = HomeScreenRoute) {
+                composable<MainScreenRoute> { MainScreen(navController) }
+                composable<HomeScreenRoute> { HomeScreen(navController) }
+                composable<ZoomScreenRoute> {
+                    val safeArgs = it.toRoute<ZoomScreenRoute>()
+                    ZoomScreen(safeArgs.urlImage)
                 }
-
             }
-            // instanciar dagger y permisos internet
-            // navController NavHost configurar navegacion
-
         }
     }
 }

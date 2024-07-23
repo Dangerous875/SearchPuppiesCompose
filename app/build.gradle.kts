@@ -95,9 +95,9 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.common)
-//contraintLayout
+//constraintLayout
     implementation(libs.constraintlayout.compose)
-
+//Serialization and Navigation 2.8.0
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.navigation.compose)
 
