@@ -3,17 +3,22 @@ package com.example.searchdogspracticecompose.ui.screens.mainDogsScreen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -31,12 +36,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.ConstraintLayoutBaseScope
 import androidx.constraintlayout.compose.ConstraintLayoutScope
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -50,6 +56,7 @@ import com.example.searchdogspracticecompose.ui.screens.mainDogsScreen.viewmodel
 fun MainScreen(navController: NavHostController, viewModel: MainScreenViewModel = hiltViewModel()) {
     val isLoading by viewModel.isLoading.collectAsState()
     val dogList by viewModel.lisDogs.collectAsState()
+    val allBreeds by viewModel.allBreeds.collectAsState()
     val context = LocalContext.current
 
     SetOrientationScreen(context = context, orientation = OrientationScreen.PORTRAIT.orientation)
@@ -57,7 +64,7 @@ fun MainScreen(navController: NavHostController, viewModel: MainScreenViewModel 
     if (isLoading) {
         ShowLoading()
     } else {
-        ContentView(viewModel, dogList,navController)
+        ContentView(viewModel, dogList, navController, allBreeds)
     }
 
 
@@ -67,23 +74,56 @@ fun MainScreen(navController: NavHostController, viewModel: MainScreenViewModel 
 fun ContentView(
     viewModel: MainScreenViewModel,
     dogList: List<String>,
-    navController: NavHostController
+    navController: NavHostController,
+    allBreeds: List<String>
 ) {
 
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val topLine = createGuidelineFromTop(0.06f)
         val (idTextField, idRecyclerView) = createRefs()
+
+        var showDialog by rememberSaveable { mutableStateOf(false) }
         var query by rememberSaveable {
             mutableStateOf("")
         }
-        SearchDogs(
-            topLine,
-            idTextField,
-            idRecyclerView,
-            query,
-            { query = it },
-            { viewModel.getDogsByBreeds(query) })
-        ShowListDogs(idTextField, idRecyclerView, dogList,navController)
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .constrainAs(idTextField) {
+                    top.linkTo(topLine)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(idRecyclerView.top)
+                }
+                .clickable { showDialog = true }
+        ) {
+            TextField(
+                value = query,
+                onValueChange = { },
+                label = { Text(text = "Search ...") },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Filled.Search,
+                        contentDescription = null
+                    )
+                },
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Search
+                ),
+                keyboardActions = KeyboardActions(
+                    onSearch = { }
+                ),
+                singleLine = true,
+                enabled = false, //
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+        if (showDialog) {
+            ShowAlertDialog(allBreeds, { query = it }, viewModel) { showDialog = it }
+        }
+        ShowListDogs(idTextField, idRecyclerView, dogList, navController)
 
 
     }
@@ -110,7 +150,8 @@ fun ConstraintLayoutScope.ShowListDogs(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp, horizontal = 4.dp)
-                    .height(250.dp).clickable {
+                    .height(250.dp)
+                    .clickable {
                         navController.navigate(ZoomScreenRoute(imageUrl))
                     },
                 elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
@@ -133,34 +174,43 @@ fun ConstraintLayoutScope.ShowListDogs(
 
 
 @Composable
-fun ConstraintLayoutScope.SearchDogs(
-    topLine: ConstraintLayoutBaseScope.HorizontalAnchor,
-    idTextField: ConstrainedLayoutReference,
-    idRecyclerView: ConstrainedLayoutReference,
-    query: String,
-    onQueryChange: (String) -> Unit,
-    onSearch: () -> Unit
+private fun ShowAlertDialog(
+    allBreeds: List<String>,
+    setQuery: (String) -> Unit,
+    viewModel: MainScreenViewModel,
+    closeDialog: (Boolean) -> Unit
 ) {
-    TextField(modifier = Modifier
-        .fillMaxWidth()
-        .constrainAs(idTextField) {
-            top.linkTo(topLine)
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
-            bottom.linkTo(idRecyclerView.top)
+    AlertDialog(
+        modifier = Modifier.height(600.dp),
+        onDismissRequest = { closeDialog(false) },
+        title = { Text(text = "Select an option") },
+        text = {
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                allBreeds.forEach { breed ->
+                    Text(
+                        text = breed,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                setQuery(breed)
+                                viewModel.getDogsByBreeds(breed)
+                                closeDialog(false)
+                            }
+                            .padding(16.dp), fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
         },
-        value = query,
-        onValueChange = { onQueryChange(it) },
-        label = { Text(text = "Search ...") },
-        leadingIcon = { Icon(imageVector = Icons.Filled.Search, contentDescription = null) },
-        keyboardOptions = KeyboardOptions.Default.copy(
-            keyboardType = KeyboardType.Text,
-            imeAction = ImeAction.Search
-        ),
-        keyboardActions = KeyboardActions(
-            onSearch = { onSearch() }
-        ),
-        singleLine = true)
+        confirmButton = {
+            Button(onClick = { closeDialog(false) }) {
+                Text("Close")
+            }
+        }
+    )
 }
 
 @Composable
