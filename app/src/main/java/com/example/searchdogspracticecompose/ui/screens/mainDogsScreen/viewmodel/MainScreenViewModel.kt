@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.searchdogspracticecompose.domain.GetAllBreedsUseCase
 import com.example.searchdogspracticecompose.domain.GetDogsByBreedsUseCase
 import com.example.searchdogspracticecompose.domain.GetSelectBreed
+import com.example.searchdogspracticecompose.domain.model.Dog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,14 +17,14 @@ import javax.inject.Inject
 class MainScreenViewModel @Inject constructor(
     private val getDogsByBreedsUseCase: GetDogsByBreedsUseCase,
     private val getSelectBreed: GetSelectBreed,
-    private val getAllBreedsUseCase: GetAllBreedsUseCase
+    getAllBreedsUseCase: GetAllBreedsUseCase
 ) :
     ViewModel() {
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
     private val _allBreeds = MutableStateFlow<List<String>>(emptyList())
     val allBreeds = _allBreeds.asStateFlow()
-    private val _listDogs = MutableStateFlow<List<String>>(emptyList())
+    private val _listDogs = MutableStateFlow<List<Dog>>(emptyList())
     val lisDogs = _listDogs.asStateFlow()
 
     init {
