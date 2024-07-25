@@ -29,10 +29,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.example.searchdogspracticecompose.data.navigation.FavoriteScreenRoute
+import com.example.searchdogspracticecompose.data.navigation.HomeScreenRoute
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopActionBar(onSearch: (Boolean) -> Unit) {
+fun TopActionBar(navController: NavHostController, onSearch: (Boolean) -> Unit) {
     val (expanded, setExpanded) = remember { mutableStateOf(false) }
 
     TopAppBar(
@@ -57,6 +60,13 @@ fun TopActionBar(onSearch: (Boolean) -> Unit) {
         },
         colors = TopAppBarDefaults.topAppBarColors(Color.Black),
         actions = {
+            IconButton(onClick = {navController.navigate(FavoriteScreenRoute)}) {
+                Icon(
+                    imageVector = Icons.Default.Favorite,
+                    contentDescription = null,
+                    tint = Color.White
+                )
+            }
             IconButton(onClick = { setExpanded(true) }) {
                 Icon(
                     imageVector = Icons.Filled.MoreVert,
@@ -72,7 +82,7 @@ fun TopActionBar(onSearch: (Boolean) -> Unit) {
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .clickable {}
+                        .clickable {navController.navigate(FavoriteScreenRoute)}
                         .fillMaxWidth()
                 ) {
 
@@ -98,7 +108,9 @@ fun TopActionBar(onSearch: (Boolean) -> Unit) {
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .clickable {}
+                        .clickable {navController.navigate(HomeScreenRoute){
+                            popUpTo<HomeScreenRoute> { inclusive = true }
+                        } }
                         .fillMaxWidth()
                 ) {
 
@@ -109,7 +121,7 @@ fun TopActionBar(onSearch: (Boolean) -> Unit) {
                     )
 
                     Text(
-                        text = "Exit Game",
+                        text = "Exit",
                         fontSize = 19.sp,
                         fontWeight = FontWeight.Normal,
                         modifier = Modifier.padding(end = 16.dp)

@@ -9,6 +9,20 @@ class GetDogsByBreedsUseCase @Inject constructor(private val dogsRepository: Dog
 
     suspend operator fun invoke(query: String): List<Dog> {
         val list = dogsRepository.getDogsByBreeds(query)
-        return list.map { it.toDomain() }
+        val listDogsByName = list.map { it.toDomain() }
+        return checkIfExistInBD(listDogsByName)
+    }
+
+    private suspend fun checkIfExistInBD(listDogsByName: List<Dog>): List<Dog> {
+        val dogsInFavorite = dogsRepository.getAllDogsFromDataBase().map { it.toDomain() }
+        val favoriteUrls = dogsInFavorite.map { it.imageUrl }.toSet()
+
+        return listDogsByName.map { dog ->
+            if (favoriteUrls.contains(dog.imageUrl)) {
+                dog.copy(iconFavorite = true)
+            } else {
+                dog
+            }
+        }
     }
 }

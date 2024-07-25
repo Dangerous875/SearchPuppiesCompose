@@ -5,5 +5,5 @@ import javax.inject.Singleton
 
 @Singleton
 class SelectBreed @Inject constructor() {
-    var selectBreed : String? = null
+    var selectBreed : String? = null ?: "akita"
 }

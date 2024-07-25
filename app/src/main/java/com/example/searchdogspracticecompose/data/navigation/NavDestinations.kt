@@ -10,3 +10,6 @@ object MainScreenRoute
 
 @Serializable
 data class ZoomScreenRoute(val urlImage : String)
+
+@Serializable
+object FavoriteScreenRoute
