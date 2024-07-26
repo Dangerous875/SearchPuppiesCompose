@@ -19,31 +19,35 @@ class DogsRepository @Inject constructor(
         return dogApiService.getDogsBreedsByName(query)
     }
 
-    fun getAllBreeds(): List<String> {
+    suspend fun getAllBreeds(): List<String> {
+        if (dogsBreeds.dogBreeds.isEmpty()) {
+            dogsBreeds.dogBreeds = dogApiService.getAllNamesFromApi()
+        }
         return dogsBreeds.dogBreeds
+
     }
 
     fun setSelectBreed(breed: String) {
         selectBreed.selectBreed = breed
     }
 
-    fun getSelectBreed():String{
+    fun getSelectBreed(): String {
         return selectBreed.selectBreed!!
     }
 
-    suspend fun getAllDogsFromDataBase():List<DogEntity>{
+    suspend fun getAllDogsFromDataBase(): List<DogEntity> {
         return dogsDao.getAllDogs()
     }
 
-    suspend fun insertDogFromDataBase(dog:DogEntity){
+    suspend fun insertDogFromDataBase(dog: DogEntity) {
         dogsDao.insertDogDataBase(dog)
     }
 
-    suspend fun deleteItemFromDB(dog : Dog){
+    suspend fun deleteItemFromDB(dog: Dog) {
         dogsDao.deleteDogByUrl(dog.imageUrl)
     }
 
-    suspend fun deleteAllItemsFromDB(){
+    suspend fun deleteAllItemsFromDB() {
         dogsDao.deleteAllFavoritesBreed()
     }
 }

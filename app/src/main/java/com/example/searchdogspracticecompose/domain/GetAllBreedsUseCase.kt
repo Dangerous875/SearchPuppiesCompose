@@ -5,7 +5,7 @@ import javax.inject.Inject
 
 class GetAllBreedsUseCase @Inject constructor(private val dogsRepository: DogsRepository) {
 
-    operator fun invoke(): List<String> {
+    suspend operator fun invoke(): List<String> {
         return dogsRepository.getAllBreeds()
     }
 }

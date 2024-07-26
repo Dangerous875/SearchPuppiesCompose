@@ -36,9 +36,10 @@ class MainScreenViewModel @Inject constructor(
     val lisDogs = _listDogs.asStateFlow()
 
     init {
-        _allBreeds.value = getAllBreedsUseCase()
+
         _isLoading.value = true
         viewModelScope.launch {
+            _allBreeds.value = getAllBreedsUseCase()
             _listDogs.value = getDogsByBreedsUseCase(getSelectBreed())
             _isLoading.value = false
         }
